@@ -33,8 +33,8 @@ public class GameActivity extends AppCompatActivity {
      * and a change of the status and navigation bar.
      */
     private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
-    private WebView mContentView;
+    private final Handler hideHandler = new Handler();
+    private WebView contenView;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity {
         }
     };
     private View mControlsView;
-    private final Runnable mShowPart2Runnable = new Runnable() {
+    private final Runnable showPart2Runnable = new Runnable() {
         @Override
         public void run() {
             // Delayed display of UI elements
@@ -134,20 +134,20 @@ public class GameActivity extends AppCompatActivity {
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+        hideHandler.removeCallbacks(showPart2Runnable);
+        hideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        contenView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+        hideHandler.removeCallbacks(mHidePart2Runnable);
+        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY);
     }
 
     /**
@@ -155,8 +155,8 @@ public class GameActivity extends AppCompatActivity {
      * previously scheduled calls.
      */
     private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+        hideHandler.removeCallbacks(mHideRunnable);
+        hideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
 }

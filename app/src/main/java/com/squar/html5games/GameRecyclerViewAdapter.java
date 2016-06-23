@@ -21,13 +21,12 @@ import java.util.List;
 
 public class GameRecyclerViewAdapter extends RecyclerView.Adapter<GameRecyclerViewAdapter.UserViewHolder> {
     List<Item> items = new ArrayList<>();
-    LayoutInflater layoutInflater;
     Context context;
-    private RecyclerView mRecyclerView;
+    private RecyclerView recyclerView;
 
     public GameRecyclerViewAdapter(Context context, RecyclerView recyclerView) {
         this.context = context;
-        this.mRecyclerView = recyclerView;
+        this.recyclerView = recyclerView;
     }
 
     @Override
@@ -60,9 +59,9 @@ public class GameRecyclerViewAdapter extends RecyclerView.Adapter<GameRecyclerVi
                 .setControllerListener(controllerListener)
                 .build();
 
-        holder.userImage.setController(controller);
+        holder.gameImage.setController(controller);
 
-        holder.userImage.setOnClickListener(v -> {
+        holder.gameImage.setOnClickListener(v -> {
             Intent intent = new Intent(context, GameActivity.class);
             intent.putExtra("URL", item.getUrl());
             v.getContext().startActivity(intent);
@@ -82,11 +81,11 @@ public class GameRecyclerViewAdapter extends RecyclerView.Adapter<GameRecyclerVi
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
 
-        private SimpleDraweeView userImage;
+        private SimpleDraweeView gameImage;
 
         public UserViewHolder(View itemView) {
             super(itemView);
-            userImage = (SimpleDraweeView) itemView.findViewById(R.id.gameImage);
+            gameImage = (SimpleDraweeView) itemView.findViewById(R.id.game_image);
         }
     }
 }

@@ -16,7 +16,7 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://html5-games-experiment.appspot.com/";
-    private WaveSwipeRefreshLayout mWaveSwipeRefreshLayout;
+    private WaveSwipeRefreshLayout waveSwipeRefreshLayout;
     private GameRecyclerViewAdapter gameRecyclerViewAdapter;
 
     @Override
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Make an object from the recyclerView
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.user_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.game_recycler_view);
         // Attach a layout manager to the recyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Instantiate the adapter with the data -list of users- from getData method
@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         // Attach the recyclerView with the adapter
         recyclerView.setAdapter(gameRecyclerViewAdapter);
 
-        mWaveSwipeRefreshLayout = (WaveSwipeRefreshLayout) findViewById(R.id.main_swipe);
-        mWaveSwipeRefreshLayout.setOnRefreshListener(() -> fetchGameList());
+        waveSwipeRefreshLayout = (WaveSwipeRefreshLayout) findViewById(R.id.main_swipe);
+        waveSwipeRefreshLayout.setOnRefreshListener(() -> fetchGameList());
 
         fetchGameList();
     }
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(g -> {
                 gameRecyclerViewAdapter.addItems(g.getItems());
-                mWaveSwipeRefreshLayout.setRefreshing(false);
+                waveSwipeRefreshLayout.setRefreshing(false);
                 }, e -> Log.e(MainActivity.class.getSimpleName(), e.getMessage()));
     }
 }
