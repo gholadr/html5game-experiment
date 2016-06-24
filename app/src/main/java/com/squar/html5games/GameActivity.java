@@ -1,6 +1,7 @@
 package com.squar.html5games;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,9 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 /**
  * Created by gholadr on 6/23/16.
@@ -39,7 +44,6 @@ public class GameActivity extends AppCompatActivity {
      */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler hideHandler = new Handler();
-    private WebView contenView;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -96,6 +100,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.game_activity);
         Intent intent = getIntent();
         String URL = intent.getStringExtra("URL");
+
         gameView = (WebView) findViewById(R.id.game_content);
         gameView.getSettings().setAppCacheMaxSize( 5 * 1024 * 1024 ); // 5MB
         gameView.getSettings().setAppCachePath( getApplicationContext().getCacheDir().getAbsolutePath() );
@@ -106,13 +111,16 @@ public class GameActivity extends AppCompatActivity {
             gameView.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK );
         }
         gameView.loadUrl(URL);
-
     }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService( CONNECTIVITY_SERVICE );
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void onReceivedError(WebView view, int errorCod,String description, String failingUrl) {
+        Toast.makeText(this, "Your Internet Connection May not be active Or " + description , Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -150,7 +158,7 @@ public class GameActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        contenView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        gameView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
 
