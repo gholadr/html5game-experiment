@@ -2,13 +2,18 @@ package com.squar.html5games;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 
 /**
@@ -92,18 +97,22 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String URL = intent.getStringExtra("URL");
         gameView = (WebView) findViewById(R.id.game_content);
+        gameView.getSettings().setAppCacheMaxSize( 5 * 1024 * 1024 ); // 5MB
+        gameView.getSettings().setAppCachePath( getApplicationContext().getCacheDir().getAbsolutePath() );
+        gameView.getSettings().setAllowFileAccess( true );
+        gameView.getSettings().setAppCacheEnabled( true );
+        gameView.getSettings().setJavaScriptEnabled( true );
+        if ( !isNetworkAvailable() ) { // loading offline
+            gameView.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK );
+        }
         gameView.loadUrl(URL);
-        WebSettings webSettings = gameView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        gameView.getSettings().setAppCacheMaxSize(1024*1024*8);
 
-        // This next one is crazy. It's the DEFAULT location for your app's cache
-        // But it didn't work for me without this line
-        gameView.getSettings().setAppCachePath("/data/data/"+ getPackageName() +"/cache");
-        gameView.getSettings().setAllowFileAccess(true);
-        gameView.getSettings().setAppCacheEnabled(true);
+    }
 
-        gameView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService( CONNECTIVITY_SERVICE );
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
